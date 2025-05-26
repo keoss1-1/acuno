@@ -1,0 +1,548 @@
+/* styles.css */
+
+/* Variables CSS para facilitar la gestión de colores, espaciados, etc. */
+:root {
+  /* Colores */
+  --color-dark-blue-primary: #001830; /* Azul oscuro principal */
+  --color-light-blue-text: #cce4ff;   /* Azul claro para texto o fondo secundario */
+  --color-light-blue-bg: #e6f0ff;     /* Azul claro para fondos */
+  --color-medium-blue-border: #003366; /* Azul medio para bordes */
+  --color-gradient-start: #004080;    /* Inicio de gradiente para botones */
+  --color-gradient-end: #0059b3;      /* Fin de gradiente para botones */
+  --color-gradient-hover-start: #0059b3; /* Inicio de gradiente al pasar el ratón */
+  --color-gradient-hover-end: #0073e6;   /* Fin de gradiente al pasar el ratón */
+  --color-error-red: #b30000;         /* Rojo para mensajes de error */
+  --color-delete-orange: #e65c00;     /* Naranja para botones de eliminar */
+  --color-delete-orange-hover: #cc5200; /* Naranja oscuro al pasar el ratón */
+
+  /* Espaciado */
+  --spacing-xs: 5px;  /* Extra pequeño */
+  --spacing-sm: 10px; /* Pequeño */
+  --spacing-md: 20px; /* Medio */
+  --spacing-lg: 30px; /* Grande */
+
+  /* Bordes y Sombras */
+  --border-radius-sm: 6px;    /* Radio de borde pequeño */
+  --border-radius-md: 10px;   /* Radio de borde medio */
+  --btn-border-radius: 8px;   /* Radio de borde para botones */
+  --box-shadow-base: 0 0 20px rgba(0,0,0,0.4); /* Sombra base para contenedores */
+  --box-shadow-btn: 0 4px 8px rgba(0,89,179,0.3); /* Sombra para botones */
+  --box-shadow-btn-hover: 0 6px 14px rgba(0,115,230,0.5); /* Sombra para botones al pasar el ratón */
+  --box-shadow-splitter: 0 0 8px rgba(0, 83, 179, 0.3); /* Sombra específica para bloques de splitter */
+
+  /* Transiciones */
+  --transition-speed-fast: 0.2s ease;   /* Transición rápida */
+  --transition-speed-normal: 0.3s ease; /* Transición normal */
+  --transition-speed-slow: 0.5s ease;   /* Transición lenta */
+}
+
+/* Estilos globales del cuerpo de la página */
+body {
+  font-family: 'Arial', sans-serif; /* Fuente principal */
+
+  /* Imagen de fondo completa, no mosaico, cubriendo toda la pantalla */
+  background-image: url('images/logo-netuno.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+
+  /* Color de fondo del body, con opacidad para dejar ver la imagen.
+     Si el color oscuro tiene una opacidad de 0.3 (30%), significa que
+     el 70% restante del fondo permite que la imagen se vea.
+  */
+  background-color: rgba(0, 24, 48, 0.3); /* Color de fondo azul oscuro con opacidad al 30% */
+
+  margin: 0;
+  padding: 0;
+  display: flex; /* Para centrar el contenido */
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ocupa al menos el 100% de la altura de la ventana */
+  flex-direction: column; /* Apila elementos verticalmente */
+  transition: background-color var(--transition-speed-slow); /* Transición suave del color de fondo */
+}
+
+/* Estilos para el contenedor de inicio de sesión */
+.login-container {
+  /* --- CAMBIO AQUÍ: Fondo azul claro con opacidad al 50% --- */
+  background: rgba(204, 228, 255, 0.5); /* Color de fondo: light-blue-text con opacidad 50% */
+  /* --- FIN DE CAMBIO --- */
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow-base); /* Sombra base */
+  color: var(--color-dark-blue-primary);
+  width: 90vw; /* Ancho del 90% del viewport */
+  max-width: 400px; /* Ancho máximo */
+  max-height: 95vh; /* Altura máxima */
+  box-sizing: border-box; /* Incluye padding y borde en el ancho/alto */
+  margin: 0 auto; /* Centrado horizontal */
+  position: relative;
+  z-index: 10; /* Asegura que esté por encima del fondo */
+}
+
+/* Estilos para el contenedor principal de la aplicación */
+.app-container {
+  /* --- CAMBIO AQUÍ: Fondo azul claro con opacidad al 50% --- */
+  background: rgba(204, 228, 255, 0.5); /* Color de fondo: light-blue-text con opacidad 50% */
+  /* --- FIN DE CAMBIO --- */
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow-base);
+  color: var(--color-dark-blue-primary);
+  width: 90vw;
+  max-width: 1200px; /* Mayor ancho máximo para la aplicación */
+  min-height: 80vh; /* Puedes mantener una altura mínima para el app-container, ajusta si es necesario */
+  height: auto;      /* Permite que la altura se ajuste automáticamente al contenido */
+  max-height: none;  /* Elimina la restricción de altura máxima */
+  overflow-y: auto;  /* Agrega un scroll vertical si el contenido excede la altura de la ventana */
+  box-sizing: border-box;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* Clase de utilidad para ocultar elementos */
+.hidden {
+  display: none !important;
+}
+
+/* Estilos para títulos */
+h1, h2, h3, h4 {
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+/* Estilos para etiquetas de formulario */
+label {
+  display: block; /* Ocupa todo el ancho disponible */
+  margin-bottom: var(--spacing-sm);
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--color-medium-blue-border);
+}
+
+/* Estilos para campos de entrada de texto, contraseña, número y selectores */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: var(--spacing-md);
+  border: 2px solid var(--color-medium-blue-border);
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  color: var(--color-dark-blue-primary);
+  background-color: var(--color-light-blue-bg);
+  transition: border-color var(--transition-speed-normal); /* Transición al enfocar */
+}
+
+/* Estilos base para botones */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  margin-top: var(--spacing-sm);
+  font-size: 1rem;
+  color: white;
+  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end)); /* Gradiente de azul */
+  border: none;
+  border-radius: var(--btn-border-radius);
+  cursor: pointer; /* Cambia el cursor a puntero */
+  font-weight: 600;
+  box-shadow: var(--box-shadow-btn); /* Sombra del botón */
+  user-select: none; /* Evita selección de texto al hacer clic */
+  transition: background var(--transition-speed-normal), transform var(--transition-speed-fast); /* Transiciones al interactuar */
+}
+
+/* Estilos para el estado hover y focus de los botones */
+.btn:hover, .btn:focus {
+  background: linear-gradient(135deg, var(--color-gradient-hover-start), var(--color-gradient-hover-end)); /* Gradiente de hover */
+  box-shadow: var(--box-shadow-btn-hover);
+  transform: translateY(-2px); /* Efecto de "levantar" */
+  outline: none; /* Elimina el contorno de enfoque por defecto */
+}
+
+/* Estilos específicos para el botón de login */
+.btn--login {
+  width: 100%;
+  max-width: 320px;
+  margin-top: var(--spacing-md);
+}
+
+/* Estilos específicos para el botón de cerrar sesión (rojo) */
+.btn--logout {
+  background: linear-gradient(135deg, #cc0000, #b30000); /* Gradiente rojo */
+  box-shadow: 0 4px 8px rgba(179,0,0,0.3);
+}
+
+.btn--logout:hover, .btn--logout:focus {
+  background: linear-gradient(135deg, #b30000, #800000); /* Gradiente rojo de hover */
+  box-shadow: 0 6px 14px rgba(128,0,0,0.5);
+}
+
+/* Estilos para botones secundarios (gris) */
+.btn--secondary {
+  background: linear-gradient(135deg, #777, #555); /* Gradiente gris */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn--secondary:hover, .btn--secondary:focus {
+  background: linear-gradient(135deg, #555, #333); /* Gradiente gris de hover */
+  box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+/* Grupo de botones (flexbox para alinear) */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md); /* Espacio entre botones */
+  flex-wrap: wrap; /* Envuelve los botones en múltiples líneas si no hay espacio */
+  margin-bottom: var(--spacing-md);
+}
+
+/* Estilos para mensajes de error */
+.error {
+  color: var(--color-error-red);
+  margin-bottom: var(--spacing-sm);
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Estilos para el encabezado de la aplicación */
+.app-header {
+  display: flex;
+  justify-content: space-between; /* Espacio entre elementos */
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+/* Estilos para los logos */
+.logo {
+  max-height: 60px;
+  width: auto;
+  object-fit: contain; /* Ajusta la imagen dentro de su contenedor */
+  padding: 0 var(--spacing-sm);
+}
+
+/* Estilos para el mensaje de bienvenida */
+.welcome {
+  font-weight: bold;
+  margin: var(--spacing-sm) auto;
+  text-align: center;
+  flex-grow: 1; /* Ocupa el espacio disponible */
+  min-width: 150px;
+}
+
+/* Estilos para el grupo de botones de opciones de usuario */
+.user-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  width: 100%;
+}
+
+/* Estilos para la sección de resultados (cálculo o historial) */
+.result {
+  margin-top: var(--spacing-md);
+  font-size: 1.2rem;
+  color: var(--color-dark-blue-primary);
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-light-blue-bg);
+}
+
+/* Clase para elementos que deben ser visualmente ocultados (para accesibilidad) */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px); /* Recorta el elemento a 1x1 pixel */
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+/* Estilos para la lista de usuarios en el panel de gestión */
+.users-list {
+  list-style-type: none; /* Elimina los puntos de la lista */
+  padding-left: 0;
+  text-align: left;
+}
+
+.users-list li {
+  border-bottom: 1px solid #ccc; /* Separador entre elementos de la lista */
+  padding: 8px 0;
+  font-size: 0.9rem;
+  color: var(--color-dark-blue-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Estilos para los botones dentro de la lista de usuarios (eliminar) */
+.users-list button {
+  margin-left: var(--spacing-sm);
+  background-color: var(--color-error-red);
+  padding: 5px 10px;
+  min-width: 60px;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 2px 5px rgba(179, 0, 0, 0.5);
+  transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+}
+
+.users-list button:hover, .users-list button:focus {
+  background-color: #800000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(128, 0, 0, 0.7);
+}
+
+/* Estilos para el botón de eliminar cálculo en el historial */
+.delete-calc-btn {
+  background-color: var(--color-delete-orange); /* Color naranja */
+  margin-left: var(--spacing-sm);
+  padding: 5px 10px;
+  min-width: 60px;
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 2px 5px rgba(230, 92, 0, 0.5);
+  transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+}
+
+.delete-calc-btn:hover, .delete-calc-btn:focus {
+  background-color: var(--color-delete-orange-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(204, 82, 0, 0.7);
+}
+
+/* Estilos para la tabla del historial de cálculos */
+.calculation-history-table {
+    width: 100%;
+    margin-top: var(--spacing-md);
+    border-collapse: collapse; /* Colapsa los bordes de la tabla */
+    font-size: 0.85rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para las celdas de encabezado y datos de la tabla */
+.calculation-history-table th,
+.calculation-history-table td {
+    padding: 10px 5px;
+    border: 1px solid var(--color-medium-blue-border);
+    text-align: center;
+    vertical-align: middle;
+    background: var(--color-light-blue-text);
+    color: var(--color-dark-blue-primary);
+}
+
+/* Estilos específicos para los encabezados de la tabla */
+.calculation-history-table th {
+    background-color: var(--color-gradient-start); /* Fondo azul para encabezados */
+    color: white;
+    font-weight: bold;
+    white-space: nowrap; /* Evita que el texto de los encabezados se envuelva */
+    text-align: center;
+}
+
+/* Estilos para filas pares del cuerpo de la tabla (alternar colores) */
+.calculation-history-table tbody tr:nth-child(even) {
+    background-color: var(--color-light-blue-bg);
+}
+
+/* Estilos al pasar el ratón sobre las filas de la tabla */
+.calculation-history-table tbody tr:hover {
+    background-color: #dbeaff; /* Fondo más claro al pasar el ratón */
+}
+
+/* Estilos para el overlay del modal (fondo oscuro semitransparente) */
+.modal-overlay {
+  position: fixed; /* Posición fija en la ventana */
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); /* Fondo oscuro con transparencia */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden; /* Oculto por defecto */
+  opacity: 0; /* Opacidad 0 por defecto */
+  transition: opacity var(--transition-speed-normal), visibility var(--transition-speed-normal); /* Transición suave */
+  z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+/* Muestra el modal cuando tiene la clase 'show' */
+.modal-overlay.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto; /* Permite interacciones con el modal */
+}
+
+/* Estilos para el contenido del modal */
+.modal {
+  background: var(--color-light-blue-bg);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  color: var(--color-dark-blue-primary);
+  text-align: center;
+}
+
+/* Estilos para el botón dentro del modal */
+.modal .btn {
+  margin-top: var(--spacing-sm);
+  width: 100px;
+}
+
+/* Estilos para el grupo de campos de splitter y empalmes (flexbox) */
+.splitter-splice-group {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-md);
+  border: none;
+  padding: 0;
+}
+
+/* Estilos para cada bloque de splitter/fusión */
+.splitter-block {
+  background: #d0e4ff; /* Fondo azul claro */
+  border-radius: var(--border-radius-md);
+  padding: 15px 20px;
+  box-shadow: var(--box-shadow-splitter);
+  flex: 1 1 280px; /* Permite que los bloques se expandan y contraigan */
+  max-width: 380px;
+  box-sizing: border-box;
+}
+
+/* Estilos para el título de cada bloque de splitter/fusión */
+.splitter-block h3 {
+  margin-top: 0;
+  text-align: center;
+  color: var(--color-medium-blue-border);
+}
+
+/* --- Media Queries para responsividad --- */
+
+/* Estilos para pantallas pequeñas (máximo 768px de ancho) */
+@media (max-width: 768px) {
+  /* Contenedores principales ocupan casi todo el ancho y se ajustan al centro */
+  .login-container, .app-container {
+    max-width: 95%;
+    position: static; /* Elimina el posicionamiento fijo */
+    transform: none;
+    margin: var(--spacing-md) auto;
+  }
+
+  .app-container {
+    padding: var(--spacing-md); /* Reduce el padding en móviles */
+    max-height: none;
+  }
+
+  /* El encabezado se apila verticalmente */
+  .app-header {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  /* Ajuste de tamaño de logos en móviles */
+  .logo {
+    max-height: 50px;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .welcome {
+    margin: var(--spacing-sm) 0;
+  }
+
+  /* Los grupos de botones y splitters se apilan verticalmente */
+  .button-group, .user-buttons, .splitter-splice-group {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: stretch; /* Estira los elementos para ocupar todo el ancho */
+    margin-top: var(--spacing-sm);
+  }
+
+  /* Los botones ocupan todo el ancho disponible */
+  .btn, .btn--login, .btn--logout, .btn--secondary {
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Los bloques de splitter ocupan todo el ancho */
+  .splitter-block {
+    max-width: 100%;
+    flex-basis: auto;
+  }
+
+  /* La lista de usuarios se apila verticalmente */
+  .users-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Los botones de eliminar usuario ocupan todo el ancho */
+  .users-list button {
+    margin-top: var(--spacing-xs);
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Tabla de historial de cálculos para móviles (modo "tarjeta") */
+  .calculation-history-table, .calculation-history-table tbody, .calculation-history-table td, .calculation-history-table th, .calculation-history-table tr {
+      display: block; /* Cada parte de la tabla se comporta como un bloque */
+  }
+
+  .calculation-history-table thead {
+      display: none; /* Oculta los encabezados de la tabla original */
+  }
+
+  /* Cada fila de la tabla se convierte en una "tarjeta" */
+  .calculation-history-table tr {
+      margin-bottom: var(--spacing-sm);
+      border: 1px solid var(--color-medium-blue-border);
+      border-radius: var(--border-radius-sm);
+      background: var(--color-light-blue-text);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: var(--spacing-sm);
+  }
+
+  /* Cada celda de la tabla se ajusta para mostrar una etiqueta */
+  .calculation-history-table td {
+      border: none; /* Elimina bordes internos de celdas */
+      position: relative;
+      padding-left: 50%; /* Espacio para la etiqueta */
+      text-align: right; /* Alinea el contenido a la derecha */
+      padding-top: 5px;
+      padding-bottom: 5px;
+  }
+
+  /* Se añade una pseudo-elemento para mostrar la etiqueta de la columna */
+  .calculation-history-table td::before {
+      content: attr(data-label); /* Usa el atributo data-label como contenido */
+      position: absolute;
+      left: 0;
+      width: 45%;
+      padding-left: var(--spacing-xs);
+      font-weight: bold;
+      text-align: left;
+      color: var(--color-dark-blue-primary);
+  }
+
+  /* Ajuste de botones dentro de la tabla para móviles */
+  .calculation-history-table td button {
+      width: auto;
+      max-width: 100%;
+      margin-left: 0;
+      margin-top: var(--spacing-xs);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+}
