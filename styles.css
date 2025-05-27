@@ -36,6 +36,13 @@
   --transition-speed-slow: 0.5s ease;   /* Transición lenta */
 }
 
+/* Asegura que el HTML y el BODY ocupen la altura completa */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* Estilos globales del cuerpo de la página */
 body {
   font-family: 'Arial', sans-serif; /* Fuente principal */
@@ -58,7 +65,7 @@ body {
   display: flex; /* Para centrar el contenido */
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Ocupa al menos el 100% de la altura de la ventana */
+  height: 100%; /* CAMBIO CLAVE: Usa height: 100% en lugar de min-height: 100vh para mejor compatibilidad móvil */
   flex-direction: column; /* Apila elementos verticalmente */
   transition: background-color var(--transition-speed-slow); /* Transición suave del color de fondo */
 }
