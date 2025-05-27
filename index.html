@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>App Seguro con Niveles de Usuario y Gestión Mejorada</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-</head>
+  </head>
 <body>
   <div id="loginContainer" class="login-container" role="main" aria-label="Pantalla de inicio de sesión">
     <h1>Iniciar Sesión</h1>
@@ -22,84 +21,91 @@
     <div id="loginError" class="error" role="alert" aria-live="assertive"></div>
   </div>
 
-  <div id="appContainer" class="app-container hidden">
+  <div id="appContainer" class="app-container hidden" role="main" aria-label="Interfaz principal de la aplicación">
     <header class="app-header">
-      <img src="images/logo-netuno.jpg" alt="Logo NetUno" class="logo logo--left" />
-      <img src="images/logo-unellez.png" alt="Logo UNELLEZ" class="logo logo--right" />
-      <div class="welcome" id="welcomeMessage"></div>
-      <div id="userButtons" class="user-buttons" role="navigation" aria-label="Opciones de usuario"></div>
+      <img src="images/logo-netuno.jpg" alt="Logo Netuno" class="logo" />
+      <h2 id="welcomeMessage">Bienvenido, usuario</h2>
       <button id="logoutBtn" class="btn btn--logout" aria-label="Cerrar sesión">Cerrar Sesión</button>
     </header>
 
-    <main id="mainApp" class="main-content" aria-live="polite" aria-atomic="true">
-      <h2>Cálculo de Pérdidas de Señal en Fibra Óptica</h2>
-      <form id="lossForm" novalidate aria-describedby="formErrors">
+    <div id="userButtons" class="user-buttons">
+      </div>
+
+    <section id="mainApp" aria-label="Cálculo de Pérdidas en Fibra Óptica">
+      <h3>Cálculo de Pérdidas en Fibra Óptica</h3>
+      <form id="lossForm" aria-describedby="formErrors" novalidate>
         <label for="projectName">Nombre del Proyecto:</label>
-        <input type="text" id="projectName" name="projectName" placeholder="Ingresa el nombre del proyecto" required aria-required="true" maxlength="50" aria-describedby="projectNameHelp" />
-        <div id="projectNameHelp" class="visually-hidden">Nombre para identificar el proyecto (máximo 50 caracteres).</div>
+        <input type="text" id="projectName" required aria-required="true" aria-describedby="projectNameHelp" />
+        <div id="projectNameHelp" class="visually-hidden">Introduce el nombre del proyecto</div>
 
-        <label for="distance">Distancia de la fibra (km):</label>
-        <input type="number" id="distance" name="distance" min="0.01" step="0.01" required aria-required="true" aria-describedby="distanceHelp" pattern="^\d{1,2}(\.\d{1,2})?$" />
-        <div id="distanceHelp" class="visually-hidden">Número positivo con hasta 2 decimales, máximo 5 caracteres en total (Ej: 123.45).</div>
+        <label for="distance">Distancia de la Fibra (km):</label>
+        <input type="number" id="distance" step="0.01" required aria-required="true" aria-describedby="distanceHelp" />
+        <div id="distanceHelp" class="visually-hidden">Introduce la distancia de la fibra en kilómetros (ej: 12.50)</div>
 
-        <fieldset class="splitter-splice-group">
-          <legend class="visually-hidden">Configuración de Splitters y Empalmes</legend>
+        <div class="splitter-splice-group" role="group" aria-labelledby="splitterGroupLabel">
+          <h4 id="splitterGroupLabel" class="visually-hidden">Configuración de Splitters y Empalmes</h4>
 
-          <div class="splitter-block" id="splitter1-block">
-            <h3>Splitter 1</h3>
-            <label for="splitterType1">Tipo de splitter:</label>
-            <select id="splitterType1" name="splitterType1" required aria-required="true" aria-describedby="splitter1Desc">
-              <option value="" disabled selected>Selecciona un tipo de splitter</option>
-              <option value="3.5">Splitter 1:2 (3.5 dB)</option>
-              <option value="7">Splitter 1:4 (7 dB)</option>
-              <option value="10.5">Splitter 1:8 (10.5 dB)</option>
-              <option value="13.8">Splitter 1:16 (13.8 dB)</option>
+          <div class="splitter-block" role="group" aria-labelledby="splitter1Label">
+            <h3 id="splitter1Label">Splitter 1</h3>
+            <label for="splitterType1">Tipo de Splitter 1:</label>
+            <select id="splitterType1" required aria-required="true" aria-describedby="splitterType1Help">
+              <option value="" disabled selected>Selecciona tipo</option>
+              <option value="3.5">1x2 (3.5dB)</option>
+              <option value="7.2">1x4 (7.2dB)</option>
+              <option value="10.5">1x8 (10.5dB)</option>
+              <option value="13.7">1x16 (13.7dB)</option>
+              <option value="17">1x32 (17dB)</option>
+              <option value="20.3">1x64 (20.3dB)</option>
             </select>
-            <div id="splitter1Desc" class="visually-hidden">Selecciona el tipo de splitter 1.</div>
-            <label for="splitters1">Cantidad de splitters:</label>
-            <input type="number" id="splitters1" name="splitters1" min="0" step="1" required aria-required="true" aria-describedby="splitters1Help" pattern="^\d{1,5}$" />
-            <div id="splitters1Help" class="visually-hidden">Cantidad de splitters 1 (número entero, máximo 5 dígitos).</div>
+            <div id="splitterType1Help" class="visually-hidden">Selecciona el tipo de Splitter 1</div>
+            <label for="splitters1">Cantidad de Splitters 1:</label>
+            <input type="number" id="splitters1" min="0" required aria-required="true" aria-describedby="splitters1Help" />
+            <div id="splitters1Help" class="visually-hidden">Introduce la cantidad de Splitters tipo 1</div>
           </div>
 
-          <div class="splitter-block" id="splitter2-block">
-            <h3>Splitter 2</h3>
-            <label for="splitterType2">Tipo de splitter:</label>
-            <select id="splitterType2" name="splitterType2" required aria-required="true" aria-describedby="splitter2Desc">
-              <option value="" disabled selected>Selecciona un tipo de splitter</option>
-              <option value="3.5">Splitter 1:2 (3.5 dB)</option>
-              <option value="7">Splitter 1:4 (7 dB)</option>
-              <option value="10.5">Splitter 1:8 (10.5 dB)</option>
-              <option value="13.8">Splitter 1:16 (13.8 dB)</option>
+          <div class="splitter-block" role="group" aria-labelledby="splitter2Label">
+            <h3 id="splitter2Label">Splitter 2</h3>
+            <label for="splitterType2">Tipo de Splitter 2:</label>
+            <select id="splitterType2" required aria-required="true" aria-describedby="splitterType2Help">
+              <option value="" disabled selected>Selecciona tipo</option>
+              <option value="3.5">1x2 (3.5dB)</option>
+              <option value="7.2">1x4 (7.2dB)</option>
+              <option value="10.5">1x8 (10.5dB)</option>
+              <option value="13.7">1x16 (13.7dB)</option>
+              <option value="17">1x32 (17dB)</option>
+              <option value="20.3">1x64 (20.3dB)</option>
             </select>
-            <div id="splitter2Desc" class="visually-hidden">Selecciona el tipo de splitter 2.</div>
-            <label for="splitters2">Cantidad de splitters:</label>
-            <input type="number" id="splitters2" name="splitters2" min="0" step="1" required aria-required="true" aria-describedby="splitters2Help" pattern="^\d{1,5}$" />
-            <div id="splitters2Help" class="visually-hidden">Cantidad de splitters 2 (número entero, máximo 5 dígitos).</div>
+            <div id="splitterType2Help" class="visually-hidden">Selecciona el tipo de Splitter 2</div>
+            <label for="splitters2">Cantidad de Splitters 2:</label>
+            <input type="number" id="splitters2" min="0" required aria-required="true" aria-describedby="splitters2Help" />
+            <div id="splitters2Help" class="visually-hidden">Introduce la cantidad de Splitters tipo 2</div>
           </div>
 
-          <div class="splitter-block" id="fusion-block">
-            <h3>Empalmes de Fusión</h3>
-            <label for="fusionSplices">Cantidad de empalmes de fusión:</label>
-            <input type="number" id="fusionSplices" name="fusionSplices" min="0" step="1" required aria-required="true" aria-describedby="fusionSplicesHelp" pattern="^\d{1,5}$" />
-            <div id="fusionSplicesHelp" class="visually-hidden">Cantidad de empalmes de fusión (número entero, máximo 5 dígitos).</div>
+          <div class="splitter-block" role="group" aria-labelledby="fusionSplicesLabel">
+            <h3 id="fusionSplicesLabel">Empalmes de Fusión</h3>
+            <label for="fusionSplices">Cantidad de Empalmes de Fusión:</label>
+            <input type="number" id="fusionSplices" min="0" required aria-required="true" aria-describedby="fusionSplicesHelp" />
+            <div id="fusionSplicesHelp" class="visually-hidden">Introduce la cantidad de empalmes de fusión</div>
           </div>
-        </fieldset>
+        </div>
 
         <div class="button-group">
-          <button type="submit" id="calculateLossBtn" class="btn" aria-label="Calcular pérdidas">Calcular Pérdidas</button>
-          <button type="button" id="resetButton" class="btn btn--secondary" aria-label="Reiniciar formulario">Reiniciar</button>
+          <button type="submit" class="btn" id="calculateLossBtn" aria-label="Calcular Pérdidas">Calcular</button>
+          <button type="button" class="btn btn--secondary" id="resetButton" aria-label="Reiniciar formulario">Reiniciar</button>
         </div>
         <div id="formErrors" class="error" role="alert" aria-live="assertive"></div>
       </form>
-      <section id="result" class="result" aria-live="polite" aria-atomic="true"></section>
-    </main>
+      <div id="result" class="result" aria-live="polite">
+        </div>
+    </section>
 
-    <section id="userManagementPanel" class="hidden user-management-panel" aria-label="Gestión de usuarios">
+    <section id="userManagementPanel" class="hidden" aria-label="Panel de Gestión de Usuarios">
       <h3>Gestión de Usuarios</h3>
       <form id="addUserForm" aria-describedby="userFormError" novalidate>
-        <label for="newUsername">Nombre de Usuario:</label>
+        <h4>Añadir Nuevo Usuario</h4>
+        <label for="newUsername">Usuario:</label>
         <input type="text" id="newUsername" required aria-required="true" aria-describedby="newUsernameHelp" />
-        <div id="newUsernameHelp" class="visually-hidden">Nombre para el nuevo usuario</div>
+        <div id="newUsernameHelp" class="visually-hidden">Nombre de usuario para el nuevo usuario</div>
         <label for="newPassword">Contraseña:</label>
         <input type="password" id="newPassword" required aria-required="true" aria-describedby="newPasswordHelp" />
         <div id="newPasswordHelp" class="visually-hidden">Contraseña para el nuevo usuario</div>
@@ -123,9 +129,10 @@
     <div class="modal" >
       <h2 id="modalErrorTitle">Error</h2>
       <p id="modalErrorMsg"></p>
-      <button id="modalCloseBtn" class="btn" aria-label="Cerrar error">Cerrar</button>
+      <button id="modalCloseBtn" class="btn" aria-label="Cerrar mensaje de error">Cerrar</button>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
