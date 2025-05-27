@@ -376,6 +376,7 @@ async function renderUsersList() {
  * Muestra u oculta paneles y habilita/deshabilita opciones.
  * @param {string} level - El nivel del usuario ('administrador', 'avanzado', 'basico').
  */
+
 function renderUserInterface(level) {
     DOMElements.welcomeMessage.textContent = `Bienvenido, ${currentUser.username} (Nivel: ${level})`;
     DOMElements.userButtons.innerHTML = ''; // Limpia los botones anteriores
@@ -396,18 +397,19 @@ function renderUserInterface(level) {
         return btn;
     };
 
-    // Opciones adicionales según el nivel del usuario
+    // --- Modificación aquí: Cambiamos el orden de añadido de los botones ---
+
+    // El botón de Gestión de Usuarios solo se muestra para administradores, y ahora será el primero si aplica.
     if (level === 'administrador') {
         DOMElements.userButtons.appendChild(createButton('Gestión de Usuarios', toggleUserManagement));
+    }
 
-    // Siempre se muestra el botón de Historial de Cálculos
+    // Siempre se muestra el botón de Historial de Cálculos, y ahora será el segundo (o el primero si no es admin)
     DOMElements.userButtons.appendChild(createButton('Historial de Cálculos', showCalculationHistory));
 
-        // CAMBIO: Llama a la nueva función generatePrintableReport
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePrintableReport));
-    } else if (level === 'avanzado') {
-        // CAMBIO: Llama a la nueva función generatePrintableReport
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePrintableReport));
+    // El botón de Reportes Avanzados se muestra para administradores y avanzados, y ahora será el último.
+    if (level === 'administrador' || level === 'avanzado') {
+        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados ', generatePrintableReport));
     }
 }
 
