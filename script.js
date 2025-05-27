@@ -402,9 +402,11 @@ function renderUserInterface(level) {
     // Opciones adicionales según el nivel del usuario
     if (level === 'administrador') {
         DOMElements.userButtons.appendChild(createButton('Gestión de Usuarios', toggleUserManagement));
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePDF));
+        // CAMBIO: Llama a la nueva función generatePrintableReport
+        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados (Imprimir)', generatePrintableReport));
     } else if (level === 'avanzado') {
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePDF));
+        // CAMBIO: Llama a la nueva función generatePrintableReport
+        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados (Imprimir)', generatePrintableReport));
     }
 }
 
@@ -516,11 +518,11 @@ async function showCalculationHistory() {
 }
 
 /**
- * Genera un informe PDF con todos los cálculos almacenados.
- * Utiliza la librería jsPDF y añade una marca de agua con el logo de NetUno.
+ * Genera un informe HTML para impresión con todos los cálculos almacenados.
+ * Incluye logos y una tabla organizada.
  */
-async function generatePDF() {
-    console.log("--- Iniciando generatePDF ---");
+async function generatePrintableReport() {
+    console.log("--- Iniciando generatePrintableReport ---");
     try {
         await openDB(); // Asegura que la DB esté abierta
         console.log("Base de datos abierta.");
@@ -544,92 +546,154 @@ async function generatePDF() {
             return;
         }
 
-        // Verifica si jsPDF está cargado
-        const { jsPDF } = window.jspdf;
-        if (!jsPDF) {
-            console.error("ERROR: jsPDF no está cargado. Asegúrate de incluir la librería jspdf.umd.min.js en tu HTML.");
-            showModalError("La librería para generar PDF no está disponible. Contacta al soporte.");
-            return;
-        }
-        const doc = new jsPDF(); // Crea una nueva instancia de jsPDF
-        const img = new Image(); // Crea un objeto Image para el logo
-        img.src = 'images/logo-netuno.jpg'; // Ruta del logo para la marca de agua
-        console.log("Intentando cargar imagen para el fondo:", img.src);
+        // Ordena los cálculos por fecha descendente para el reporte
+        calculations.sort((a, b) => new Date(b.calculatedAt) - new Date(a.calculatedAt));
 
-        // Cuando la imagen se carga, procede a generar el PDF
-        img.onload = () => {
-            console.log("Imagen de fondo cargada con éxito.");
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
-            const canvas = document.createElement('canvas'); // Crea un canvas para manipular la imagen
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.globalAlpha = 0.1; // Ajusta la opacidad para la marca de agua
-            ctx.drawImage(img, 0, 0); // Dibuja la imagen en el canvas
-            const imgData = canvas.toDataURL('image/png'); // Obtiene la imagen en base64
-
-            // Añade la marca de agua a la primera página
-            doc.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
-
-            // Título del reporte
-            doc.setFontSize(20);
-            doc.setTextColor('#003366');
-            doc.text('Reporte Avanzado de Cálculos de Pérdidas', pageWidth / 2, 20, { align: 'center' });
-
-            doc.setFontSize(12);
-            doc.setTextColor('#000000');
-            let y = 40; // Posición inicial para el contenido
-
-            // Itera sobre cada cálculo para añadirlo al PDF
-            calculations.forEach((calc, index) => {
-                // Añade una nueva página si el contenido excede la altura actual
-                if (y > pageHeight - 30) {
-                    doc.addPage();
-                    y = 20; // Resetea la posición y
-                    doc.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight); // Añade marca de agua a la nueva página
-                    doc.setFontSize(20);
-                    doc.setTextColor('#003366');
-                    doc.text(`Reporte Avanzado de Cálculos de Pérdidas - Página ${doc.internal.getNumberOfPages()}`, pageWidth / 2, 20, { align: 'center' });
-                    doc.setFontSize(12);
-                    doc.setTextColor('#000000');
-                    y = 40;
-                }
-                // Añade los detalles del cálculo al PDF
-                doc.text(`Cálculo #${index + 1}`, 15, y);
-                y += 7;
-                doc.text(`Proyecto: ${sanitizeHTML(calc.projectName)}`, 15, y);
-                y += 7;
-                doc.text(`Distancia (km): ${calc.distance}`, 15, y);
-                y += 7;
-                doc.text(`Splitter 1: Tipo ${calc.splitterLoss1} dB, Cantidad: ${calc.splitters1}`, 15, y);
-                y += 7;
-                doc.text(`Splitter 2: Tipo ${calc.splitterLoss2} dB, Cantidad: ${calc.splitters2}`, 15, y);
-                y += 7;
-                doc.text(`Empalmes de Fusión: ${calc.fusionSplices}`, 15, y);
-                y += 7;
-                doc.text(`Señal Final: ${calc.finalSignal.toFixed(2)} dB`, 15, y);
-                y += 7;
-                doc.text(`Realizado por: ${sanitizeHTML(calc.calculatedBy || 'N/A')}`, 15, y);
-                y += 7;
-                doc.text(`Fecha: ${new Date(calc.calculatedAt).toLocaleString()}`, 15, y);
-                y += 12; // Espacio entre cálculos
+        let tableRowsHtml = '';
+        calculations.forEach(calc => {
+            const formattedDate = new Date(calc.calculatedAt).toLocaleString('es-VE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
             });
-            doc.save('Reporte_Avanzado_Perdidas_FibraOptica.pdf'); // Guarda el PDF con un nombre de archivo
-            console.log("Función doc.save() ejecutada. El PDF debería descargarse.");
-        };
-        // Manejo de error si la imagen no se carga
-        img.onerror = () => {
-            console.error("Error al cargar la imagen para el fondo del reporte. Verifique la ruta 'images/logo-netuno.jpg'.");
-            showModalError('No se pudo cargar la imagen para el fondo del reporte. El PDF se generará sin ella.');
-            doc.save('Reporte_Avanzado_Perdidas_FibraOptica.pdf'); // Genera el PDF sin la imagen
-        };
+            tableRowsHtml += `
+                <tr>
+                    <td>${sanitizeHTML(calc.projectName)}</td>
+                    <td>${calc.distance}</td>
+                    <td>${calc.splitterLoss1}</td>
+                    <td>${calc.splitters1}</td>
+                    <td>${calc.splitterLoss2}</td>
+                    <td>${calc.splitters2}</td>
+                    <td>${calc.fusionSplices}</td>
+                    <td>${calc.finalSignal.toFixed(2)}</td>
+                    <td>${formattedDate}</td>
+                    <td>${sanitizeHTML(calc.calculatedBy || 'N/A')}</td>
+                </tr>
+            `;
+        });
+
+        const reportContent = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Reporte de Cálculos de Pérdidas</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20mm;
+                        color: #333;
+                    }
+                    .header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 30px;
+                        border-bottom: 2px solid #eee;
+                        padding-bottom: 10px;
+                    }
+                    .header img {
+                        max-height: 80px;
+                        width: auto;
+                    }
+                    .header h1 {
+                        color: #003366;
+                        text-align: center;
+                        flex-grow: 1;
+                        font-size: 24px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                        color: #003366;
+                        font-weight: bold;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 40px;
+                        font-size: 10px;
+                        color: #777;
+                    }
+                    @media print {
+                        body {
+                            margin: 0;
+                        }
+                        .header {
+                            margin-bottom: 20px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <img src="images/logo-netuno.jpg" alt="Logo Netuno">
+                    <h1>Reporte de Cálculos de Pérdidas</h1>
+                    <img src="images/logo-unellez.png" alt="Logo Unellez"> </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Proyecto</th>
+                            <th>Distancia (km)</th>
+                            <th>Splitter 1 (dB)</th>
+                            <th>Cant. S1</th>
+                            <th>Splitter 2 (dB)</th>
+                            <th>Cant. S2</th>
+                            <th>Empalmes Fusión</th>
+                            <th>Señal Final (dB)</th>
+                            <th>Fecha y Hora</th>
+                            <th>Realizado Por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRowsHtml}
+                    </tbody>
+                </table>
+                <div class="footer">
+                    Reporte generado por el Sistema de Cálculo de Pérdidas en Fibra Óptica - ${new Date().toLocaleDateString('es-VE')}
+                </div>
+                <script>
+                    window.onload = () => {
+                        window.print();
+                        // Opcional: Cerrar la ventana después de la impresión/cancelación.
+                        // setTimeout(() => window.close(), 100);
+                    };
+                </script>
+            </body>
+            </html>
+        `;
+
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+            printWindow.document.write(reportContent);
+            printWindow.document.close(); // Cierra el documento para asegurar que el contenido se carga
+            // El window.print() se llama desde el script dentro de la ventana de impresión para asegurar que el DOM esté listo.
+        } else {
+            showModalError('No se pudo abrir una nueva ventana para el reporte. Asegúrate de que los bloqueadores de pop-ups estén desactivados.');
+            console.error("Error: No se pudo abrir la ventana de impresión.");
+        }
 
     } catch (error) {
-        console.error("Error general en generatePDF:", error);
+        console.error("Error general en generatePrintableReport:", error);
         showModalError('Error generando el reporte. Revisa la consola para más detalles.');
     }
-    console.log("--- Fin de generatePDF ---");
+    console.log("--- Fin de generatePrintableReport ---");
 }
 
 /**
@@ -847,7 +911,7 @@ numericInputs.forEach(input => {
         } else {
             // CAMBIO: Para los campos de splitters y empalmes (que deben ser enteros)
             value = value.replace(/[^0-9]/g, ''); // Solo permite dígitos (sin punto decimal)
-            if (value.length > 1) { // Limita la longitud total a 2 dígitos
+            if (value.length > 2) { // Limita la longitud total a 2 dígitos (modificado de 1 a 2)
                 value = value.substring(0, 2);
             }
         }
