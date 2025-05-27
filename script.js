@@ -396,17 +396,18 @@ function renderUserInterface(level) {
         return btn;
     };
 
-    // Siempre se muestra el botón de Historial de Cálculos
-    DOMElements.userButtons.appendChild(createButton('Historial de Cálculos', showCalculationHistory));
-
     // Opciones adicionales según el nivel del usuario
     if (level === 'administrador') {
         DOMElements.userButtons.appendChild(createButton('Gestión de Usuarios', toggleUserManagement));
+
+    // Siempre se muestra el botón de Historial de Cálculos
+    DOMElements.userButtons.appendChild(createButton('Historial de Cálculos', showCalculationHistory));
+
         // CAMBIO: Llama a la nueva función generatePrintableReport
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados (Imprimir)', generatePrintableReport));
+        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePrintableReport));
     } else if (level === 'avanzado') {
         // CAMBIO: Llama a la nueva función generatePrintableReport
-        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados (Imprimir)', generatePrintableReport));
+        DOMElements.userButtons.appendChild(createButton('Reportes Avanzados', generatePrintableReport));
     }
 }
 
